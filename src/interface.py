@@ -50,7 +50,7 @@ if "messages" not in st.session_state:
     st.session_state.messages = []
 
 # Sidebar arrangement
-st.logo("resources/chimege.png", size="large")
+st.logo("resources/icon.png", size="large")
 
 st.sidebar.header("Тохиргоо")
 if st.sidebar.button("✨ Шинэ чат үүсгэх", use_container_width=True):
@@ -61,7 +61,6 @@ st.sidebar.selectbox("Хэлний загвар сонгох (LLM)", decoder_mod
 st.sidebar.slider("Температур", 0.0, 1.0, value=0.25, key="cfg_temperature")
 if st.sidebar.button("Системийн промпт тохируулах", use_container_width=True):
     update_prompt()
-
 
 st.sidebar.divider()
 
