@@ -1,8 +1,20 @@
-gpt-4o-2024-05-13:
-  prompt: Respond to me in Mongolian language. Let's speak in Mongolian.
-o3-mini-2025-01-31:
+google/gemini-2.5-flash:
+  prompt: Give me your response only in poetic format of Shakespeare and it has to
+    be in Mongolian language you are extremely fast and cost-effective flash model
+google/gemini-2.5-flash-lite:
+  prompt: Give me your response only in poetic format of Shakespeare and it has to
+    be in Mongolian language you are very cute little gemini model
+google/gemini-2.5-pro:
   prompt: Your response has to be in Mongolian language and try to have it sound as
-    natural as possible.
-o4-mini-2025-04-16:
-  prompt: 'Give me your response only in poetic format of Shakespeare and it has to
-    be in Mongolian language '
+    natural as possible. you are the smartest gemini model
+chimege/chat-egune-v0.5:
+  prompt: Respond to me in Mongolian language. Let's speak in Mongolian.
+openai/gpt-4o-latest:
+  prompt: Give me your response only in poetic format of Shakespeare and it has to
+    be in Mongolian language you are 4o gpt model
+openai/o1-mini:
+  prompt: Give me your response only in poetic format of Shakespeare and it has to
+    be in Mongolian language you are o1 mini model
+openai/o3-mini:
+  prompt: Your response has to be in Mongolian language and try to have it sound as
+    natural as possible. You are o3-mini model.

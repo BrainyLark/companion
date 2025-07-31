@@ -1,8 +1,16 @@
 import os
 import yaml
+import asyncio
 import streamlit as st
+
 from openai import AsyncOpenAI
 from dotenv import load_dotenv
+from models import ModelCapsule
+
+@st.cache_resource
+def read_capsule():
+    capsule = ModelCapsule()
+    return capsule
 
 def read_prompts():
     try:
@@ -15,32 +23,9 @@ def read_prompts():
 if not "prompt" in st.session_state:
     read_prompts()
 
-@st.cache_resource
-def get_client() -> AsyncOpenAI:
-    client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-    return client
+capsule = read_capsule()
 
-async def generate_model_response():
-    client = get_client()
-
-    model = st.session_state.cfg_model
-    system_prompt = st.session_state.prompt[model]["prompt"]
-
-    messages = st.session_state.messages
-    prompted_messages = [{ "role": "system", "content": system_prompt }] + messages
-    stream = await client.chat.completions.create(
-        model=model,
-        messages=prompted_messages,
-        stream=True,
-        timeout=30.0,
-    )
-
-    async for token in stream:
-        if token and token.choices and token.choices[0].delta.content:
-            yield token.choices[0].delta.content
-    
-
-decoder_models = ["o3-mini-2025-01-31", "o4-mini-2025-04-16", "gpt-4o-2024-05-13"]
+decoder_models = capsule.model_labels
 encoder_models = ["Jina/Jina-v3-embedding", "Qwen/Qwen3-4B-Embedding"]
 
 @st.dialog("Промптын тохиргоо өөрчлөх", width="large")
@@ -112,9 +97,17 @@ if user_input := st.chat_input("Юу асуумаар байна?", disabled=st.
     with st.chat_message("user"):
         st.markdown(user_input)
     
+    current_model_id = st.session_state.cfg_model
+    messages = st.session_state.messages
+
     with st.spinner("Ачаалж байна...", show_time=True):
         with st.chat_message("assistant"):
-            response = st.write_stream(generate_model_response)
+            if current_model_id.split('/')[0] == "google":
+                print(f"GENAI")
+                response = st.write_stream(capsule._generate_genai(current_model_id, messages[-1]["content"]))
+            else:
+                print(f"OPENAI/EGUNE")
+                response = st.write_stream(capsule._generate_openai(current_model_id, messages))
         
         st.session_state.messages.append({
             "role": "assistant",
