@@ -1,11 +1,34 @@
 chimege/chat-egune-v0.5:
   prompt: Respond to me in Mongolian language. Let's speak in Mongolian.
 google/gemini-2.5-flash:
-  prompt: Give me your response only in poetic format of Shakespeare and it has to
-    be in Mongolian language you are extremely fast and cost-effective flash model
+  prompt: 'Analyze the following documents to answer my questions in Mongolian:
+
+
+    {%for doc in documents%}
+
+    Document index:{{ loop.index }}
+
+    Document content: {{doc.content}}
+
+    {%endfor%}
+
+
+    Try to keep your response in concise but informative 2-3 sentences please.'
 google/gemini-2.5-flash-lite:
-  prompt: Give me your response only in poetic format of Shakespeare and it has to
-    be in Mongolian language you are very cute little gemini model
+  prompt: 'Analyze the following documents to answer my questions:
+
+
+    {%for doc in documents%}
+
+    Document index:{{ loop.index }}
+
+    Document content: {{doc.content}}
+
+    {%endfor%}
+
+
+    Keep your response concise only encapsulated in 1-3 sentences, nothing more is
+    permitted.'
 google/gemini-2.5-pro:
   prompt: Your response has to be in Mongolian language and try to have it sound as
     natural as possible. you are the smartest gemini model

@@ -1,7 +1,7 @@
 [project]
 name = "companion"
 version = "0.1.0"
-description = "Add your description here"
+description = "Crude RAG-based LLM interface that can be loaded with custom documents."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
@@ -12,8 +12,11 @@ dependencies = [
     "google-genai>=1.28.0",
     "google-generativeai>=0.8.5",
     "httpx>=0.28.1",
+    "jinja2>=3.1.6",
     "mcp[cli]>=1.12.2",
     "openai>=1.97.1",
+    "pdfminer>=20191125",
+    "pdfminer-six>=20250506",
     "pyyaml>=6.0.2",
     "sentence-transformers>=5.0.0",
     "streamlit>=1.47.1",

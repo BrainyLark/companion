@@ -1,0 +1,58 @@
+services:
+  weaviate:
+    command:
+    - --host
+    - 0.0.0.0
+    - --port
+    - '8080'
+    - --scheme
+    - http
+    image: cr.weaviate.io/semitechnologies/weaviate:1.32.1
+    ports:
+    - "8080:8080"
+    - "50051:50051"
+    volumes:
+    - weaviate_data:/var/lib/weaviate
+    restart: on-failure:0
+    environment:
+      QUERY_DEFAULTS_LIMIT: 25
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
+      PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
+      ENABLE_API_BASED_MODULES: 'true'
+      CLUSTER_HOSTNAME: 'node1'
+    networks:
+      - companion-network
+
+  companion-app:
+    build: .
+    ports:
+      - "8501:8501"
+    depends_on:
+      - weaviate
+    environment:
+      - WEAVIATE_URL=http://weaviate:8080
+      - NVIDIA_VISIBLE_DEVICES=5,6,7
+      - CUDA_VISIBLE_DEVICES=0,1,2
+
+    volumes:
+      - .:/app
+      - /app/__pycache__
+      # Mount model cache to persist downloaded models
+      - model_cache:/root/.cache/huggingface
+    networks:
+      - companion-network
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['5','6', '7']
+              capabilities: [gpu]
+volumes:
+  weaviate_data:
+  model_cache:
+
+networks:
+  companion-network:
+    driver: bridge

@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 
 from typing import Dict, Any, List
 from google import genai
+from google.genai import types
 
 load_dotenv()
 
@@ -58,7 +59,7 @@ class ModelCapsule:
 
         self.genai_client = genai.Client(api_key=os.getenv("GENAI_API_KEY"))        
         self.openai_client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-        self.egune_client = AsyncOpenAI(base_url=os.getenv("EGUNE_BASE_URL"), 
+        self.egune_client = AsyncOpenAI(base_url=os.getenv("EGUNE_BASE_URL"),
                                         api_key=os.getenv("EGUNE_API_KEY"))
         
         self.genai_chats = {}
@@ -68,13 +69,15 @@ class ModelCapsule:
     def model_labels(self) -> List[str]:
         return self.metadata.keys()
     
-    async def _generate_genai(self, model_id: str, user_message: str):
+    async def _generate_genai(self, model_id: str, user_message: str, system_prompt: str):
         try:
             if model_id not in self.genai_chats:
                 chat = self.genai_client.chats.create(model=self.metadata[model_id]["model_label"])
                 self.genai_chats[model_id] = chat
 
-            response = self.genai_chats[model_id].send_message_stream(user_message)
+            response = self.genai_chats[model_id].send_message_stream(user_message, config=types.GenerateContentConfig(
+                system_instruction=system_prompt
+            ))
 
             for chunk in response:
                 if chunk.text:
